@@ -91,14 +91,36 @@ class SortingRobot:
         Returns True if the robot's light is on and False otherwise.
         """
         return self._light == "ON"
+    def reset_position(self):
+        # a way to reset the position to restart the loop. Just moves the robot to the left as far as possible.
+        while self.can_move_left():
+            self.move_left()
+    
+    def get_len(self):
+        # a way of getting around not having the ability to call length directly is recursively call get_len() while moving right and returning 1 each call.
+        if self.can_move_right() == False:
+            return 1
+        else:
+            self.move_right()
+            return 1 + self.get_len()
 
     def sort(self):
         """
         Sort the robot's list.
         """
         # Fill this out
-        pass
-
+        for _ in range(0, self.get_len()):
+            #this sort uses a bubble sort method. Starting with a loop through the length of the array, which I access indirectly using another method.
+            self.reset_position()
+            #First step in the loop is to start at the initial position and since the robot can't access the position directly, I use a helper method to run back to the left most position in the array for each time.
+            while self.can_move_right():
+                ##the inner loop runs while there's still items to the right. It first grabs the item and checks if it's bigger than the initial item grabbed and if it's bigger swaps the items and keeps moving
+                self.swap_item()
+                self.move_right()
+                if self.compare_item() == 1:
+                    self.swap_item()
+            #unfortunately this method only passes 4/5 of the tests and while that is within range of the specifications in the readme I had a bit of an issue getting the last test to pass.
+            #adding 1 to the loop brings up errors involving None and without being able to access the item directly I decided to leave it as is for now. Similarly, some of the stretch times pass as well but not all.
 
 if __name__ == "__main__":
     # Test our your implementation from the command line
